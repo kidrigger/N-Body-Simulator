@@ -11,7 +11,7 @@
 #include <algorithm>
 #include <iostream>
 
-#define PARALLEL
+//#define PARALLEL
 
 Celestial::Octree::Octree():root(Vector3d(0,0,0),0,0) {}
 
@@ -101,4 +101,8 @@ void Celestial::Octree::DrawDFS(Celestial::Graphics &graphics, const Celestial::
     }
 }
 
-
+void Celestial::Octree::CalculateForce(double theta){
+    for(int i = 0; i != root.nodeArray.length(); ++i){
+        root.nodeArray[i].bodyCG.acceleration = root.TotalForce(root.nodeArray[i],theta)/root.nodeArray[i].bodyCG.mass;
+    }
+}

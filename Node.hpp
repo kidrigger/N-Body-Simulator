@@ -21,52 +21,53 @@ namespace Celestial {
         Leaf = 1,
         Branch = 2
     };
-    
+
     class Node {
     public:
         // The state of this node, Empty, Leaf or Branch
         NodeState nodeState;
-        
+
         // The vector containing all the child nodes of the tree;
         std::vector<Node> nodeArray;
-        
+
         // Create new Node at the center that contains the subsystem in the Quad
         // with sidelength side
         // the in the tree is calculated automatically on create sub nodes.
         Node(const Vector3d& center, double side,int id);
-        
+
         // Adds a new body to the sub-system
         // returns the reference to the cgBody of the system
         Body& Add(const Body& data);
-        
+
         // Checks if the particular body belongs to the said subsystem
         // returns true if it does
         bool Contains(const Body& body ) {
             return containQuad.Contains(body.position);
         }
-        
+
         Quad GetQuad() const {
             return containQuad;
         }
-        
+
         Body GetCG() const {
             return bodyCG;
         }
-        
+
         int GetID() const {
             return id;
         }
-        
+
         std::string StateToString() const;
         std::string QuadToString() const;
-        
+
+        Vector3d TotalForce(const Node& particle, double tolerance);
     private:
         // The body containing total mass of subsystem and center of mass
         Body bodyCG;
         // The containing quad of the node
         Quad containQuad;
         int id;
-        
+
         void CreateSubNodes();
     };
 }

@@ -24,16 +24,15 @@ namespace Celestial {
         void Build(const vector<Body>& bodies);
         void Draw(Graphics& graphics);
         void Print();
-        
+        void CalculateForce(double theta);
         //TODO: Implement
         void Update(double dt){}
-        void CalculateForce() {}
     private:
         void DrawDFS(Graphics& graphics, const Node& head);
         void PrintDFS(const Node& head, int level = 0);
         Node root;
     };
-    
+
     double Span(const vector<Celestial::Body>& bodies);
 }
 
