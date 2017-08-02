@@ -34,7 +34,7 @@ namespace Celestial {
         void PrintDFS(const Node& head, int level = 0);
         Node root;
     };
-    
+
     double Span(const vector<Celestial::Body>& bodies);
 }
 

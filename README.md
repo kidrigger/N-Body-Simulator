@@ -1,6 +1,6 @@
 # N-Body-Simulator
 <hr>
-Nobody simulation project in works with Celestia <br>
+N-body simulation project in works with Celestia <br>
 <ul>
 <li>Language in use: C++14 <br>
 <li>Libraries: 

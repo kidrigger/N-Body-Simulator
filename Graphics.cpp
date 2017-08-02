@@ -18,7 +18,7 @@ Celestial::Graphics::Graphics(float span, int screenSide):screenSide(screenSide)
     else {
         std::cerr << "Allegro initialized." << std::endl;
     }
-    
+
     if((display = al_create_display(screenSide, screenSide)) == nullptr){
         std::cerr << "ERROR: Display could not be created" << std::endl;
         exit(1);
@@ -26,10 +26,10 @@ Celestial::Graphics::Graphics(float span, int screenSide):screenSide(screenSide)
     else {
         std::cerr << "Display (" << screenSide << "x" << screenSide <<")created." << std::endl;
     }
-    
+
     White = al_map_rgb(255, 255, 255);
     Red = al_map_rgb(255, 0, 0);
-    
+
 }
 
 void Celestial::Graphics::DrawPoint(double x, double y) {
@@ -70,8 +70,8 @@ void Celestial::Graphics::DrawQuad(const Quad& toDrawQuad){
 
 void Celestial::Graphics::Draw() {
     al_flip_display();
-} 
-    
+}
+
 Celestial::Graphics::~Graphics(){
         al_destroy_display(display);
 }

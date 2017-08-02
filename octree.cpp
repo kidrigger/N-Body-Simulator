@@ -11,7 +11,7 @@
 #include <algorithm>
 #include <iostream>
 
-#define PARALLEL
+//#define PARALLEL
 
 Celestial::Octree::Octree():root(Vector3d(0,0,0),0,0) {}
 
