@@ -38,10 +38,7 @@ namespace Celestial {
         // Adds a new body to the sub-system
         // returns the reference to the cgBody of the system
         Body& Add(const Body& data);
-        
-        // --------------- TODO: Implement --------------- //
-        Vector3d GetAcceleration(const Body& body) {return Eigen::Vector3d(0,0,0);}
-        
+
         // Checks if the particular body belongs to the said subsystem
         // returns true if it does
         bool Contains(const Body& body ) {
@@ -63,7 +60,7 @@ namespace Celestial {
         std::string StateToString() const;
         std::string QuadToString() const;
 
-        Vector3d TotalForce(const Node& particle, double tolerance);
+        Vector3d TotalForce(const Body& particle, double tolerance) const ;
     private:
         // The body containing total mass of subsystem and center of mass
         Body bodyCG;

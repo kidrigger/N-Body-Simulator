@@ -7,6 +7,7 @@
 //
 
 #include "Node.hpp"
+#include "Constants.hpp"
 
 namespace Celestial {
 
@@ -72,20 +73,19 @@ namespace Celestial {
         return strem.str();
     }
 
-    Vector3d TotalForce (const Node& particle, double tolerance) {
-        Vector3d force = new Vector3d(0, 0, 0);
-        if (nodeState == NodeState::empty) {
+    Vector3d Node::TotalForce (const Body& particle, double tolerance) const {
+        Vector3d force(0, 0, 0);
+        if (nodeState == NodeState::Empty) {
             return force;
         }
         Vector3d dir = bodyCG.position - particle.position;
-        if (nodeState == NodeState::leaf) {
-            double distance = sqrt(dir.squaredNorm() + epsilon * epsilon);
-            double mag = (Constants.Gravitation * bodyCG.mass * particle.mass) / (distance * distance * distance);
+        if (nodeState == NodeState::Leaf) {
+            double mag = (Constants::Gravitation * bodyCG.mass * particle.mass) / (dir.squaredNorm() * dir.norm());
             force = (mag * dir);
         }
         else { //if(nodeState == NodeState::branch){
             if ((containQuad.side*containQuad.side / dir.squaredNorm()) < tolerance*tolerance) {
-                double mag = (Constants.Gravitation * bodyCG.mass * particle.mass) / (dir.squaredNorm() * dir.Norm());
+                double mag = (Constants::Gravitation * bodyCG.mass * particle.mass) / (dir.squaredNorm() * dir.norm());
                 force = (mag * dir);
             }
             else {

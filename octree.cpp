@@ -105,10 +105,9 @@ void Celestial::Octree::DrawDFS(Celestial::Graphics &graphics, const Celestial::
     }
 }
 
-void Celestial::Octree::CalculateAcceleration() {
-    for(auto it = bodies.begin(); it != bodies.end(); ++it){
-        it->acceleration = root.GetAcceleration(*it);
+void Celestial::Octree::CalculateAcceleration(double theta){
+    auto n = bodies.size();
+    for (int i = 0; i != n; ++i) {
+        bodies[i].acceleration = root.TotalForce(bodies[i], theta);
     }
 }
-
-
