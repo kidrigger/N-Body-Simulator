@@ -17,15 +17,19 @@ Celestial::Octree::Octree():root(Vector3d(0,0,0),0,0) {}
 
 #ifdef PARALLEL
 
+// Find maximum between the two points
 double maxim(int initial, int final, const vector<Celestial::Body>& bodies){
     double sqrmax = 0;
+    std::cout << initial << " started\n";
     for(int i = initial; i != final; ++i){
         double sqrnrm = bodies[i].position.squaredNorm();
         sqrmax = (sqrnrm>sqrmax)?sqrnrm:sqrmax;
     }
+    std::cout << initial << " completed\n";
     return sqrmax;
 }
 
+// Divide the job into three and launch async
 double Celestial::Span(const vector<Celestial::Body>& bodies){
     auto len = bodies.size();
     auto h1 = std::async(std::launch::async,maxim,0,(int)(len/3),bodies);
@@ -98,6 +102,12 @@ void Celestial::Octree::DrawDFS(Celestial::Graphics &graphics, const Celestial::
     }
     for(int i = 0; i != 4; ++i){
         DrawDFS(graphics, head.nodeArray[i]);
+    }
+}
+
+void Celestial::Octree::CalculateAcceleration() {
+    for(auto it = bodies.begin(); it != bodies.end(); ++it){
+        it->acceleration = root.GetAcceleration(*it);
     }
 }
 

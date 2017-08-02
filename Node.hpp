@@ -39,6 +39,9 @@ namespace Celestial {
         // returns the reference to the cgBody of the system
         Body& Add(const Body& data);
         
+        // --------------- TODO: Implement --------------- //
+        Vector3d GetAcceleration(const Body& body) {return Eigen::Vector3d(0,0,0);}
+        
         // Checks if the particular body belongs to the said subsystem
         // returns true if it does
         bool Contains(const Body& body ) {

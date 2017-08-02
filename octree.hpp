@@ -25,10 +25,11 @@ namespace Celestial {
         void Draw(Graphics& graphics);
         void Print();
         
-        //TODO: Implement
+        //TODO: Implement update
         void Update(double dt){}
-        void CalculateForce() {}
+        void CalculateAcceleration();
     private:
+        vector<Body> bodies;
         void DrawDFS(Graphics& graphics, const Node& head);
         void PrintDFS(const Node& head, int level = 0);
         Node root;
