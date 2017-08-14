@@ -37,7 +37,7 @@ namespace Celestial {
 
         // Adds a new body to the sub-system
         // returns the reference to the cgBody of the system
-        Body& Add(const Body& data);
+        void Add(const Body& data);
 
         // Checks if the particular body belongs to the said subsystem
         // returns true if it does
@@ -60,10 +60,10 @@ namespace Celestial {
         std::string StateToString() const;
         std::string QuadToString() const;
 
-        Vector3d TotalForce(const Node& particle, double tolerance);
+        Vector3d TotalForce(const Body& particle, double tolerance) const ;
     private:
         // The body containing total mass of subsystem and center of mass
-        Body bodyCG;
+        Body bodyCG; 
         // The containing quad of the node
         Quad containQuad;
         int id;

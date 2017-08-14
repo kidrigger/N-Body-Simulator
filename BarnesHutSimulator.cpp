@@ -19,7 +19,7 @@ void Celestial::BarnesHutSimulator::Create(const std::vector<Body> &bodies){
 void Celestial::BarnesHutSimulator::Run(double T, double dt){
     for(double time = 0; time < T; time += dt){
         octree.Build(bodies);
-        octree.CalculateForce();
+        octree.CalculateAcceleration(0.5);
         octree.Update(dt);
     }
 }

@@ -17,15 +17,19 @@ Celestial::Octree::Octree():root(Vector3d(0,0,0),0,0) {}
 
 #ifdef PARALLEL
 
+// Find maximum between the two points
 double maxim(int initial, int final, const vector<Celestial::Body>& bodies){
     double sqrmax = 0;
+    std::cout << initial << " started\n";
     for(int i = initial; i != final; ++i){
         double sqrnrm = bodies[i].position.squaredNorm();
         sqrmax = (sqrnrm>sqrmax)?sqrnrm:sqrmax;
     }
+    std::cout << initial << " completed\n";
     return sqrmax;
 }
 
+// Divide the job into three and launch async
 double Celestial::Span(const vector<Celestial::Body>& bodies){
     auto len = bodies.size();
     auto h1 = std::async(std::launch::async,maxim,0,(int)(len/3),bodies);
@@ -76,6 +80,10 @@ void Celestial::Octree::Build(const vector<Body>& bodies){
     root = Node(Eigen::Vector3d(0,0,0),size,0);
     for(auto it = bodies.begin(); it != bodies.end(); ++it){
         root.Add(*it);
+        // <<<<<<<< DEBUG ONLY >>>>>>>> //
+        this->Print();
+        std::cin.ignore();
+        std::cout << std::endl;
     }
 }
 
@@ -101,8 +109,9 @@ void Celestial::Octree::DrawDFS(Celestial::Graphics &graphics, const Celestial::
     }
 }
 
-void Celestial::Octree::CalculateForce(double theta){
-    for(int i = 0; i != root.nodeArray.length(); ++i){
-        root.nodeArray[i].bodyCG.acceleration = root.TotalForce(root.nodeArray[i],theta)/root.nodeArray[i].bodyCG.mass;
+void Celestial::Octree::CalculateAcceleration(double theta){
+    auto n = bodies.size();
+    for (int i = 0; i != n; ++i) {
+        bodies[i].acceleration = root.TotalForce(bodies[i], theta);
     }
 }
