@@ -80,6 +80,10 @@ void Celestial::Octree::Build(const vector<Body>& bodies){
     root = Node(Eigen::Vector3d(0,0,0),size,0);
     for(auto it = bodies.begin(); it != bodies.end(); ++it){
         root.Add(*it);
+        // <<<<<<<< DEBUG ONLY >>>>>>>> //
+        this->Print();
+        std::cin.ignore();
+        std::cout << std::endl;
     }
 }
 

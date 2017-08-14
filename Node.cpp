@@ -13,7 +13,7 @@ namespace Celestial {
 
     Node::Node(const Vector3d& center, double side, int id):id(id),nodeState(NodeState::Empty),bodyCG(),containQuad(center,side) {}
 
-    Body& Node::Add(const Body &data) {
+    void Node::Add(const Body &data) {
         if(nodeState == NodeState::Empty) {
             bodyCG = data;
             nodeState = NodeState::Leaf;
@@ -24,10 +24,12 @@ namespace Celestial {
             bodyCG = Body();
             for(auto it = nodeArray.begin(); it != nodeArray.end(); ++it) {
                 if(it->Contains(data)) {
-                    bodyCG = Body::CalculateCG(bodyCG,it->Add(data));
+                    it->Add(data);
+                    bodyCG = Body::CalculateCG(bodyCG,data);
                 }
                 if(it->Contains(tempBody)) {
-                    bodyCG = Body::CalculateCG(bodyCG,it->Add(tempBody));
+                    it->Add(tempBody);
+                    bodyCG = Body::CalculateCG(bodyCG,tempBody);
                 }
             }
             nodeState = NodeState::Branch;
@@ -35,11 +37,11 @@ namespace Celestial {
         else if(nodeState == NodeState::Branch) {
             for(auto it = nodeArray.begin(); it != nodeArray.end(); ++it) {
                 if(it->Contains(data)) {
-                    bodyCG = Body::CalculateCG(bodyCG,it->Add(data));
+                    it->Add(data);
+                    bodyCG = Body::CalculateCG(bodyCG,data);
                 }
             }
         }
-        return bodyCG;
     }
 
     void Node::CreateSubNodes() {
