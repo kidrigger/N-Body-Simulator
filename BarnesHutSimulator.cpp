@@ -7,27 +7,49 @@
 //
 
 #include "BarnesHutSimulator.hpp"
+#include <future>
 
-Celestial::BarnesHutSimulator::BarnesHutSimulator(){}
+Celestial::BarnesHutSimulator::BarnesHutSimulator():graphics(900,900){}
 
 void Celestial::BarnesHutSimulator::Create(const std::vector<Body> &bodies){
     this->bodies = bodies;
-    octree.Build(bodies);
-    graphics.setSpan(octree.size);
-}
-
-void Celestial::BarnesHutSimulator::Run(double T, double dt){
-    for(double time = 0; time < T; time += dt){
-        octree.Build(bodies);
-        octree.CalculateAcceleration(0.5);
-        octree.Update(dt);
+    {
+        Octree octree;
+        span = octree.Build(bodies);
+        centralize(octree.GetSystemCG());
+        octree.Print();
+        graphics.setSpan(octree.size);
     }
 }
 
-void Celestial::BarnesHutSimulator::Draw(){
-    octree.Draw(graphics);
+void Celestial::BarnesHutSimulator::Run(double T, double dt){
+    Octree octree;
+    octree.Build(bodies,span);
+    octree.CalculateAcceleration(0.5);
+    std::cout << std::endl;
+    for(double time = 0; time < T; time += dt){
+        // printf("%f\n",time);
+        // octree.Print();
+        this->bodies = octree.Update(dt);
+        auto future_oct = std::async(std::launch::async,Octree::MakeAccelOctree,bodies,span);
+        printf("%f\n",time);
+        octree.Draw(graphics);
+        octree = future_oct.get();
+    }
 }
 
-void Celestial::BarnesHutSimulator::Print(){
-    octree.Print();
+void Celestial::BarnesHutSimulator::Test(int n) {
+    for(auto i = 0; i != n; ++i)
+    {
+        Octree octree;
+        octree.Build(bodies);
+        printf("%i\n",i);
+    }
+}
+
+void Celestial::BarnesHutSimulator::centralize(const Celestial::Body& center) {
+    for(auto it = bodies.begin(); it != bodies.end(); ++it) {
+        it->position = it->position - center.position;
+        it->velocity = it->velocity - center.velocity;
+    }
 }

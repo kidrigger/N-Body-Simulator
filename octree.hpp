@@ -21,16 +21,27 @@ namespace Celestial {
     public:
         double size;
         Octree();
-        void Build(const vector<Body>& bodies);
+        Octree(const Octree& other) = default;
+        Octree(Octree&& other) = default;
+        Octree& operator= (const Octree& other) = default;
+        Octree& operator= (Octree&& other) = default;
+        double Build(const vector<Body>& bodies, double span = 0);
         void Draw(Graphics& graphics);
         void Print();
         void CalculateAcceleration(double theta = 0.5);
-        //TODO: Implement
-        void Update(double dt){}
+        std::vector<Body> Update(double dt);
+        Body GetSystemCG () { return root.GetCG(); }
+        static Octree MakeAccelOctree(const vector<Body>& bodies, double span = 0) {
+            Octree oct;
+            oct.Build(bodies,span);
+            oct.CalculateAcceleration();
+            return oct;
+        }
     private:
         vector<Body> bodies;
         void DrawDFS(Graphics& graphics, const Node& head);
         void PrintDFS(const Node& head, int level = 0);
+        void Clear() {root.Clear();}
         Node root;
     };
     

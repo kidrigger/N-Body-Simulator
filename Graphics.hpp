@@ -36,7 +36,8 @@ namespace Celestial {
         void DrawQuad(const Quad& toDrawQuad);
         void DrawLine(double x1, double y1, double x2, double y2);
         void Draw();
-        void Clear() {al_clear_to_color(al_map_rgb(0, 0, 0));}
+        void Clear() { al_clear_to_color(al_map_rgb(0, 0, 0)); }
+        void Wait(float seconds) { al_rest(seconds); }
     private:
         int screenSide;
         float scale;

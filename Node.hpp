@@ -56,6 +56,13 @@ namespace Celestial {
         int GetID() const {
             return id;
         }
+        
+        void Clear() {
+            for(auto it = nodeArray.begin(); it != nodeArray.end(); ++it) {
+                it->Clear();
+            }
+            nodeArray.clear();
+        }
 
         std::string StateToString() const;
         std::string QuadToString() const;
@@ -67,6 +74,7 @@ namespace Celestial {
         // The containing quad of the node
         Quad containQuad;
         int id;
+        float spat_tol;
 
         void CreateSubNodes();
     };

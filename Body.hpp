@@ -11,6 +11,7 @@
 
 #include <vector>
 #include "Eigen/Core"
+#include <array>
 using Eigen::Vector3d;
 
 namespace Celestial {
@@ -42,11 +43,28 @@ namespace Celestial {
         }
         
         // Resets the acceleration of the body for the next frame
-        void Reset() { acceleration << 0,0,0; }
+        void ResetAcceleration() { acceleration << 0,0,0; }
         
-        // Creates the body out of a vector of the form:
+        // Creates the body out of a vector or array of the form:
         // m rx ry rz vx vy vz
         void Create(const std::vector<double> &vec) {
+            mass = vec[0];
+            position << vec[1], vec[2], vec[3];
+            velocity << vec[4], vec[5], vec[6];
+        }
+        
+        void Create(std::vector<double> &&vec) {
+            mass = vec[0];
+            position << vec[1], vec[2], vec[3];
+            velocity << vec[4], vec[5], vec[6];
+        }
+        
+        void Create(const std::array<double,7> &vec) {
+            mass = vec[0];
+            position << vec[1], vec[2], vec[3];
+            velocity << vec[4], vec[5], vec[6];
+        }
+        void Create(std::array<double,7> &&vec) {
             mass = vec[0];
             position << vec[1], vec[2], vec[3];
             velocity << vec[4], vec[5], vec[6];
