@@ -17,7 +17,7 @@ void Celestial::BarnesHutSimulator::Create(const std::vector<Body> &bodies){
         Octree octree;
         span = octree.Build(bodies);
         centralize(octree.GetSystemCG());
-        octree.Print();
+        // octree.Print();
         graphics.setSpan(octree.size);
     }
 }
@@ -31,10 +31,12 @@ void Celestial::BarnesHutSimulator::Run(double T, double dt){
         // printf("%f\n",time);
         // octree.Print();
         this->bodies = octree.Update(dt);
-        auto future_oct = std::async(std::launch::async,Octree::MakeAccelOctree,bodies,span);
-        printf("%f\n",time);
+        auto future_oct = std::async(std::launch::async,Octree::MakeAcceleratedOctree,bodies,span);
         octree.Draw(graphics);
         octree = future_oct.get();
+        printf("%f",time);
+        fflush(stdout);
+        printf("\r");
     }
 }
 

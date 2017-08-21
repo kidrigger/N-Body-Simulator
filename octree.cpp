@@ -11,9 +11,6 @@
 #include <algorithm>
 #include <iostream>
 
-#define PARALLEL
-#define DYN_SPAN
-
 Celestial::Octree::Octree():root(Vector3d(0,0,0),0,0) {}
 
 #ifdef PARALLEL
@@ -130,7 +127,7 @@ void Celestial::Octree::DrawDFS(Celestial::Graphics &graphics, const Celestial::
 void Celestial::Octree::CalculateAcceleration(double theta){
     auto n = bodies.size();
     for (int i = 0; i != n; ++i) {
-        bodies[i].acceleration = root.TotalForce(bodies[i], theta);
+        bodies[i].acceleration = root.TotalAcceleration(bodies[i], theta);
     }
 }
 

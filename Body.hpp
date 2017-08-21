@@ -64,6 +64,7 @@ namespace Celestial {
             position << vec[1], vec[2], vec[3];
             velocity << vec[4], vec[5], vec[6];
         }
+        
         void Create(std::array<double,7> &&vec) {
             mass = vec[0];
             position << vec[1], vec[2], vec[3];

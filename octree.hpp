@@ -14,6 +14,9 @@
 #include "Node.hpp"
 #include "Graphics.hpp"
 
+#define PARALLEL
+#define DYN_SPAN
+
 using Eigen::Vector3d;
 using std::vector;
 namespace Celestial {
@@ -31,7 +34,7 @@ namespace Celestial {
         void CalculateAcceleration(double theta = 0.5);
         std::vector<Body> Update(double dt);
         Body GetSystemCG () { return root.GetCG(); }
-        static Octree MakeAccelOctree(const vector<Body>& bodies, double span = 0) {
+        static Octree MakeAcceleratedOctree(const vector<Body>& bodies, double span = 0) {
             Octree oct;
             oct.Build(bodies,span);
             oct.CalculateAcceleration();

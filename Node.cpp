@@ -8,6 +8,7 @@
 
 #include "Node.hpp"
 #include "Constants.hpp"
+#include <future>
 
 namespace Celestial {
 
@@ -77,7 +78,7 @@ namespace Celestial {
         return strem.str();
     }
 
-    Vector3d Node::TotalForce (const Body& particle, double tolerance) const {
+    Vector3d Node::TotalAcceleration (const Body& particle, double tolerance) const {
         Vector3d force(0, 0, 0);
         if (nodeState == NodeState::Empty) {
             return force;
@@ -91,13 +92,28 @@ namespace Celestial {
             force = (mag * dir);
         }
         else { //if(nodeState == NodeState::branch){
-            if ((containQuad.side*containQuad.side / dir.squaredNorm()) < tolerance*tolerance) {
-                double mag = (Constants::Gravitation * bodyCG.mass * particle.mass) / (dir.squaredNorm() * dir.norm() + spat_tol);
-                force = (mag * dir);
+            if(id <= 4) {
+                std::vector<std::future<Vector3d>> future_doubles;
+                future_doubles.reserve(4);
+                for (auto& x : nodeArray) {
+                    // Might block, but also might not.
+                    future_doubles.push_back(std::async(std::launch::async,&Node::TotalAcceleration, &x, particle, tolerance));
+                }
+                
+                // Now block on all of them one at a time.
+                for (auto& f_d : future_doubles) {
+                    force += f_d.get();
+                }
             }
             else {
-                for (auto it = nodeArray.begin(); it != nodeArray.end(); ++it) {
-                    force = force + it->TotalForce(particle, tolerance);
+                if ((containQuad.side*containQuad.side / dir.squaredNorm()) < tolerance*tolerance) {
+                    double mag = (Constants::Gravitation * bodyCG.mass) / (dir.squaredNorm() * dir.norm() + spat_tol);
+                    force = (mag * dir);
+                }
+                else {
+                    for (auto it = nodeArray.begin(); it != nodeArray.end(); ++it) {
+                        force = force + it->TotalAcceleration(particle, tolerance);
+                    }
                 }
             }
         }
