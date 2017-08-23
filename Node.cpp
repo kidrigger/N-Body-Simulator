@@ -12,7 +12,7 @@
 
 namespace Celestial {
 
-    Node::Node(const Vector3d& center, double side, int id):id(id),nodeState(NodeState::Empty),bodyCG(),containQuad(center,side),spat_tol(2) {}
+    Node::Node(const Vector3d& center, double side, int id):id(id),nodeState(NodeState::Empty),bodyCG(),containQuad(center,side),spat_tol(1) {}
 
     void Node::Add(const Body &data) {
         //std::cout << id << std::endl;
@@ -92,6 +92,7 @@ namespace Celestial {
             force = (mag * dir);
         }
         else { //if(nodeState == NodeState::branch){
+            /*
             if(id <= 4) {
                 std::vector<std::future<Vector3d>> future_doubles;
                 future_doubles.reserve(4);
@@ -99,13 +100,12 @@ namespace Celestial {
                     // Might block, but also might not.
                     future_doubles.push_back(std::async(std::launch::async,&Node::TotalAcceleration, &x, particle, tolerance));
                 }
-                
                 // Now block on all of them one at a time.
                 for (auto& f_d : future_doubles) {
                     force += f_d.get();
                 }
-            }
-            else {
+            }*/
+            //else {
                 if ((containQuad.side*containQuad.side / dir.squaredNorm()) < tolerance*tolerance) {
                     double mag = (Constants::Gravitation * bodyCG.mass) / (dir.squaredNorm() * dir.norm() + spat_tol);
                     force = (mag * dir);
@@ -115,7 +115,7 @@ namespace Celestial {
                         force = force + it->TotalAcceleration(particle, tolerance);
                     }
                 }
-            }
+            //}
         }
         return force;
     }

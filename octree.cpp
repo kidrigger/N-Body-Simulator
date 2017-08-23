@@ -84,10 +84,10 @@ double Celestial::Octree::Build(const vector<Body>& bodies, double span){
 #ifndef DYN_SPAN
     if(span == 0)
 #endif
-        size = 1.5*Span(bodies);
+        size = 2*Span(bodies);
 #ifndef DYN_SPAN
     else
-        size = 1.5*span;
+        size = 2*span;
 #endif
     root = Node(Eigen::Vector3d(0,0,0),size,0);
     for(auto it = bodies.begin(); it != bodies.end(); ++it){
@@ -99,7 +99,7 @@ double Celestial::Octree::Build(const vector<Body>& bodies, double span){
         std::cout << std::endl;
         //*/
     }
-    return 2*(size)/3;
+    return size/2;
 }
 
 void Celestial::Octree::Draw(Celestial::Graphics &graphics){

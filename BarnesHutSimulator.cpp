@@ -9,7 +9,7 @@
 #include "BarnesHutSimulator.hpp"
 #include <future>
 
-Celestial::BarnesHutSimulator::BarnesHutSimulator():graphics(900,900){}
+Celestial::BarnesHutSimulator::BarnesHutSimulator():graphics(800,800){}
 
 void Celestial::BarnesHutSimulator::Create(const std::vector<Body> &bodies){
     this->bodies = bodies;
@@ -17,6 +17,7 @@ void Celestial::BarnesHutSimulator::Create(const std::vector<Body> &bodies){
         Octree octree;
         span = octree.Build(bodies);
         centralize(octree.GetSystemCG());
+        span = octree.Build(bodies);
         // octree.Print();
         graphics.setSpan(octree.size);
     }
@@ -34,6 +35,7 @@ void Celestial::BarnesHutSimulator::Run(double T, double dt){
         auto future_oct = std::async(std::launch::async,Octree::MakeAcceleratedOctree,bodies,span);
         octree.Draw(graphics);
         octree = future_oct.get();
+        // graphics.setSpan(octree.size);
         printf("%f",time);
         fflush(stdout);
         printf("\r");

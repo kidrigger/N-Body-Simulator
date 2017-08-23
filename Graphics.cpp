@@ -6,21 +6,22 @@
 //  Copyright © 2017 Anish Bhobe. All rights reserved.
 //
 
-#define GRAPHICS_ON 1
+//#define DEBUG_GRAPHICS
+#define GRAPHICS_ON
 
 #include "Graphics.hpp"
 #include <iostream>
 #include <allegro5/allegro_primitives.h>
     
 Celestial::Graphics::Graphics(float span, int screenSide):screenSide(screenSide),scale(screenSide/span),offset(screenSide/2) {
-    if(!al_init()){
+    if(!al_init()) {
         std::cerr << "ERROR: Allegro could not be initialized." << std::endl;
         exit(1);
     }
     else {
         std::cerr << "Allegro initialized." << std::endl;
     }
-
+    
     if((display = al_create_display(screenSide, screenSide)) == nullptr){
         std::cerr << "ERROR: Display could not be created" << std::endl;
         exit(1);
@@ -76,7 +77,9 @@ void Celestial::Graphics::DrawQuad(double x, double y, double side){
 
 void Celestial::Graphics::DrawQuad(const Quad& toDrawQuad){
 #ifdef GRAPHICS_ON
-    // DrawQuad(toDrawQuad.center[0], toDrawQuad.center[1], toDrawQuad.side);
+#ifdef DEBUG_GRAPHICS
+    DrawQuad(toDrawQuad.center[0], toDrawQuad.center[1], toDrawQuad.side);
+#endif
 #endif
 }
 
