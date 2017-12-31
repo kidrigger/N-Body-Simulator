@@ -46,7 +46,7 @@ double Celestial::Span(const vector<Celestial::Body>& bodies){
 
 #else // if PARALLEL not defined
 
-
+//Finds the squared maximum from the bodies and returns the square root
 double Celestial::Span(const vector<Celestial::Body>& bodies){
     double sqrmax = 0;
     for(auto it = bodies.begin(); it != bodies.end(); ++it){
@@ -57,10 +57,13 @@ double Celestial::Span(const vector<Celestial::Body>& bodies){
 
 #endif // end if statement
 
+//Calls PrintDFS
 void Celestial::Octree::Print(){
     PrintDFS(root);
 }
 
+//Prints in the console the ID and State and other parameters
+//of the Node
 void Celestial::Octree::PrintDFS(const Celestial::Node &head, int level){
     for(int i = 0 ; i != level; ++i){
         std::cout << "   ";
@@ -70,11 +73,14 @@ void Celestial::Octree::PrintDFS(const Celestial::Node &head, int level){
     {
         return;
     }
-    for(int i = 0; i != 4; ++i){
+    for(int i = 0; i != 4; ++i){			//The "4" here changes the octree into a quadtree
         PrintDFS(head.nodeArray[i],level+1);
     }
 }
 
+//Builds the quadtree in the quad with the parameters provided
+//starts with the first body till the last body with "auto" to handle the
+//data type issues
 void Celestial::Octree::Build(const vector<Body>& bodies){
     size = 2*Span(bodies)+1;
     root = Node(Eigen::Vector3d(0,0,0),size,0);
@@ -87,12 +93,14 @@ void Celestial::Octree::Build(const vector<Body>& bodies){
     }
 }
 
+//Draws the bodies after clearing the screen and calls the DrawDFS
 void Celestial::Octree::Draw(Celestial::Graphics &graphics){
     graphics.Clear();
     DrawDFS(graphics, root);
     graphics.Draw();
 }
 
+//Draws each leaf in the quad and sub quads then moves to the branch of that quad to draw its content
 void Celestial::Octree::DrawDFS(Celestial::Graphics &graphics, const Celestial::Node &head){
     graphics.DrawQuad(head.GetQuad());
     if(head.nodeState == NodeState::Leaf)
@@ -104,11 +112,12 @@ void Celestial::Octree::DrawDFS(Celestial::Graphics &graphics, const Celestial::
     {
         return;
     }
-    for(int i = 0; i != 4; ++i){
+    for(int i = 0; i != 4; ++i){		//the "4" here makes the octree a quadtree
         DrawDFS(graphics, head.nodeArray[i]);
     }
 }
 
+//Calculates the acceleration using the total force experienced by the body
 void Celestial::Octree::CalculateAcceleration(double theta){
     auto n = bodies.size();
     for (int i = 0; i != n; ++i) {
