@@ -98,5 +98,48 @@ namespace Celestial {
         }
         return force;
     }
+	
+	Void Node::Collision (vector<Body>& bodies) {
+		if (nodeState == NodeState::Branch) {
+			for (auto it = bodies.begin(); it != bodies.end(); it++){
+				for (auto that = bodies.begin(); that != bodies.end(); that++){
+					if(it != that){
+						double dis = dir.squaredNorm();
+						if( sqrt(dis) <= it.radius + that.radius ){
+							const double e = 1;
+							Vector3d firstPos = it.position;
+							Vector3d firstVel = it.velocity;
+							Vector3d secondPos = that.position;
+							Vector3d secondVel = that.velocity;
+							
+							double firstVelmag = firstVel.squaredNorm();
+							double secondVelmag = secondVel.squaredNorm();
+							Vector3d dir = secondPos - firstPos;
+							
+							double firstCos = firstVel.dot(dir)/sqrt(dis);
+							double firstSin = sqrt(firstVelmag - firstCos*firstCos);
+							double secondCos = secondVel*(-1*dir)/sqrt(dis);
+							double secondSin = sqrt(secondVelmag - secondCos*secondCos);
+							
+							Vector3d firstPerp = dir.cross(dir.cross(firstVel));
+							Vector3d secondPerp = dir.cross(dir.cross(secondVel));
+							
+							Vector3d perpOne = firstPerp*firstSin/firstPerp.norm();
+							Vector3d perpTwo = secondPerp*secondSin/secondPerp.norm();
+							
+							Vector3d firstIndir = dir*firstCos/dir.norm();
+							Vector3d secondIndir = -1*dir*secondCos/dir.norm();
+							
+							Vector3d firstOutdir = ((it.mass*firstIndir+that.mass*secondIndir) + e*that.mass*(secondIndir - firstIndir))/(it.mass + that.mass);
+							Vector3d secondOutdir = ((it.mass*firstIndir+that.mass*secondIndir) - e*it.mass*(secondIndir - firstIndir))/(it.mass + that.mass);
+							
+							it.velocity = firstOutdir + perpOne;
+							that.velocity = secondOutdir + perpTwo;
+						}
+					}
+				}
+			}
+		}
+	}
 
 }

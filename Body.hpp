@@ -19,6 +19,9 @@ namespace Celestial {
         
         // Mass of the body
         double mass;
+		
+		//Radius of the body
+		double radius;
         
         // Position of the body
         Vector3d position;
@@ -29,9 +32,9 @@ namespace Celestial {
         // Acceleration of the body
         // To be reset every frame.
         Vector3d acceleration;
-        
+		
         // Constructs empty body
-        Body():mass(0),position(0,0,0),velocity(0,0,0),acceleration(0,0,0) {}
+        Body():mass(0),radius(0),position(0,0,0),velocity(0,0,0),acceleration(0,0,0) {}
         
         // Copy the body
         void operator= (const Body& body) {
@@ -39,17 +42,19 @@ namespace Celestial {
             position = body.position;
             velocity = body.velocity;
             acceleration = body.acceleration;
+			radius = body.radius;
         }
         
         // Resets the acceleration of the body for the next frame
         void Reset() { acceleration << 0,0,0; }
         
         // Creates the body out of a vector of the form:
-        // m rx ry rz vx vy vz
+        // m rx ry rz vx vy vz r
         void Create(const std::vector<double> &vec) {
             mass = vec[0];
             position << vec[1], vec[2], vec[3];
             velocity << vec[4], vec[5], vec[6];
+			radius = vec[7];
         }
         
         // Prints the object as a string
