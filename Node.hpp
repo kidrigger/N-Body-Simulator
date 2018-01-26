@@ -61,6 +61,8 @@ namespace Celestial {
         std::string QuadToString() const;
 
         Vector3d TotalForce(const Body& particle, double tolerance) const ;
+		
+		void Collision (vector<Body>& bodies);
     private:
         // The body containing total mass of subsystem and center of mass
         Body bodyCG; 
