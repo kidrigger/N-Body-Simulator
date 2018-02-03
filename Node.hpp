@@ -29,11 +29,13 @@ namespace Celestial {
 
         // The vector containing all the child nodes of the tree;
         std::vector<Node> nodeArray;
+        
+        Node* parent;
 
         // Create new Node at the center that contains the subsystem in the Quad
         // with sidelength side
         // the in the tree is calculated automatically on create sub nodes.
-        Node(const Vector3d& center, double side,int id);
+        Node(Node* parent, const Vector3d& center, double side,int id);
 
         // Adds a new body to the sub-system
         // returns the reference to the cgBody of the system

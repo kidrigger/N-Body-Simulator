@@ -12,7 +12,7 @@
 
 namespace Celestial {
 
-    Node::Node(const Vector3d& center, double side, int id):id(id),nodeState(NodeState::Empty),bodyCG(),containQuad(center,side),spat_tol(0.4) {}
+    Node::Node(Node* parent, const Vector3d& center, double side, int id):id(id),nodeState(NodeState::Empty),bodyCG(),containQuad(center,side),spat_tol(0.4),parent(parent) {}
 
     void Node::Add(const Body &data) {
         //std::cout << id << std::endl;
@@ -52,7 +52,7 @@ namespace Celestial {
         for(int i = -1; i <= 1; i+=2) {
             for(int j = -1; j <= 1; j+=2) {
                 Eigen::Vector3d tempVec(containQuad.center.x() - i*containQuad.halfside/2, containQuad.center.y() - j*containQuad.halfside/2, containQuad.center.z());
-                nodeArray.push_back(std::move(Node(tempVec,containQuad.halfside,4*id + idc)));
+                nodeArray.push_back(std::move(Node(this,tempVec,containQuad.halfside,4*id + idc)));
                 idc++;
             }
         }
