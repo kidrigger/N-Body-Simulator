@@ -49,6 +49,9 @@ void Celestial::BarnesHutSimulator::Test(int n) {
         octree.Build(bodies);
         printf("%i\n",i);
     }
+    Octree octree;
+    octree.Build(bodies);
+    octree.Draw(graphics);
 }
 
 void Celestial::BarnesHutSimulator::centralize(const Celestial::Body& center) {

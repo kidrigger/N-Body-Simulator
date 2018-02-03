@@ -15,6 +15,7 @@ Celestial::Octree::Octree():root(Vector3d(0,0,0),0,0) {}
 
 #ifdef PARALLEL
 
+//
 // Find maximum between the two points
 double maxim(int initial, int final, const vector<Celestial::Body> bodies){
     double sqrmax = 0;

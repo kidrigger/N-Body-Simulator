@@ -21,7 +21,11 @@ int main(int argc, char * argv[]) {
     
     Celestial::BarnesHutSimulator sim;
     sim.Create(bodies);
-    sim.Run(1000,0.01);
+    sim.Run(1000,0.001);
+    //sim.Test(10);
+    
+    al_rest(100);
+    
     std::cout << "Completed" << std::endl;
     
     return 0;

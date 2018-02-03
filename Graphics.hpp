@@ -29,7 +29,6 @@ namespace Celestial {
         ~Graphics();
         
         void setSpan(float span) { scale = screenSide/span; }
-        
         void DrawPoint(double x, double y);
         void DrawPoint(const Body& bd);
         void DrawQuad(double x, double y, double side);

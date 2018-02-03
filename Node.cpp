@@ -12,7 +12,7 @@
 
 namespace Celestial {
 
-    Node::Node(const Vector3d& center, double side, int id):id(id),nodeState(NodeState::Empty),bodyCG(),containQuad(center,side),spat_tol(1) {}
+    Node::Node(const Vector3d& center, double side, int id):id(id),nodeState(NodeState::Empty),bodyCG(),containQuad(center,side),spat_tol(0.4) {}
 
     void Node::Add(const Body &data) {
         //std::cout << id << std::endl;
@@ -83,12 +83,12 @@ namespace Celestial {
         if (nodeState == NodeState::Empty) {
             return force;
         }
-        if ((particle.position - bodyCG.position).squaredNorm() < 0.0002) {
+        if ((particle.position - bodyCG.position).squaredNorm() == 0) {
             return force;
         }
         Vector3d dir = bodyCG.position - particle.position;
         if (nodeState == NodeState::Leaf) {
-            double mag = (Constants::Gravitation * bodyCG.mass * particle.mass) / (dir.squaredNorm() * dir.norm() + spat_tol);
+            double mag = (Constants::Gravitation * bodyCG.mass) / (dir.squaredNorm() * dir.norm() + spat_tol);
             force = (mag * dir);
         }
         else { //if(nodeState == NodeState::branch){

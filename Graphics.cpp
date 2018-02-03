@@ -42,7 +42,7 @@ void Celestial::Graphics::DrawPoint(double x, double y) {
     x += offset;
     y += offset;
     if(x > 0 && y > 0)
-        al_draw_pixel(x, y, White);
+        al_draw_filled_circle(x, y, 1, White);
 #endif
 }
 
