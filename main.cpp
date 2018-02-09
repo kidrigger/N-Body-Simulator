@@ -8,37 +8,25 @@
 
 #include <iostream>
 #include <vector>
+#include "Input.hpp"
 #include "BarnesHutSimulator.hpp"
+#include <future>
+
+
 
 int main(int argc, char * argv[]) {
     
-    // proto
-    std::vector<double> bs{1, 4, 4, 0, -4, 4, 0};
-    std::vector<double> br{1, -4, -4, 0, 4, -4, 0};
-    std::vector<double> bc{1, 2, 2, 0, 2, 2, 0};
-    std::vector<double> be{1, 2, 3, 0, 2, 2, 0};
-    std::vector<double> ba{1, 1.9, 3, 0, 0, 0, 0};
-    std::vector<Celestial::Body> bodies(5);
-    
-    bodies[0].Create(bs);
-    bodies[1].Create(br);
-    bodies[2].Create(bc);
-    bodies[3].Create(be);
-    bodies[4].Create(ba);
-    // proto end
-    
-    /*
-     * TODO: Integrator
-     * TODO: Update function
-     * TODO: Run
-     */
+    Celestial::NBodySimInput input;
+    auto bodies = input.GetBodyInput();
     
     Celestial::BarnesHutSimulator sim;
     sim.Create(bodies);
-    sim.Draw();
-    sim.Print();
+    sim.Run(1000,0.001);
+    //sim.Test(10);
     
-    std::cin.ignore();
+    al_rest(100);
+    
+    std::cout << "Completed" << std::endl;
     
     return 0;
 }

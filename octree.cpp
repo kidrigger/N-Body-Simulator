@@ -11,35 +11,40 @@
 #include <algorithm>
 #include <iostream>
 
-//#define PARALLEL
-
-Celestial::Octree::Octree():root(Vector3d(0,0,0),0,0) {}
+Celestial::Octree::Octree():root(nullptr,Vector3d(0,0,0),0,0) {}
 
 #ifdef PARALLEL
 
+//
 // Find maximum between the two points
-double maxim(int initial, int final, const vector<Celestial::Body>& bodies){
+double maxim(int initial, int final, const vector<Celestial::Body> bodies){
     double sqrmax = 0;
-    std::cout << initial << " started\n";
+    // std::cout << initial << " started\n";
     for(int i = initial; i != final; ++i){
         double sqrnrm = bodies[i].position.squaredNorm();
         sqrmax = (sqrnrm>sqrmax)?sqrnrm:sqrmax;
     }
-    std::cout << initial << " completed\n";
+    // std::cout << final << " completed\n";
     return sqrmax;
 }
 
 // Divide the job into three and launch async
 double Celestial::Span(const vector<Celestial::Body>& bodies){
     auto len = bodies.size();
-    auto h1 = std::async(std::launch::async,maxim,0,(int)(len/3),bodies);
-    auto h2 = std::async(std::launch::async,maxim,(int)(len/3),(int)(len*2/3),bodies);
-    auto h3 = std::async(std::launch::async,maxim,(int)(len*2/3),len,bodies);
+    auto first_border = len>>2;
+    auto half_border = len>>1;
+    auto three_quarts = (len>>1) + (len>>2);
+    auto h1 = std::async(std::launch::async,maxim,0,first_border,bodies);
+    auto h2 = std::async(std::launch::async,maxim,first_border,half_border,bodies);
+    auto h3 = std::async(std::launch::async,maxim,half_border,three_quarts,bodies);
+    auto h4 = std::async(std::launch::async,maxim,three_quarts,len,bodies);
     double sqrmax = 0;
     sqrmax = h1.get();
     double temp = h2.get();
     sqrmax = (temp>sqrmax)?temp:sqrmax;
     temp = h3.get();
+    sqrmax = (temp>sqrmax)?temp:sqrmax;
+    temp = h4.get();
     sqrmax = (temp>sqrmax)?temp:sqrmax;
     return sqrt(sqrmax);
 }
@@ -75,16 +80,27 @@ void Celestial::Octree::PrintDFS(const Celestial::Node &head, int level){
     }
 }
 
-void Celestial::Octree::Build(const vector<Body>& bodies){
-    size = 2*Span(bodies)+1;
-    root = Node(Eigen::Vector3d(0,0,0),size,0);
+double Celestial::Octree::Build(const vector<Body>& bodies, double span){
+    this->bodies = bodies;
+#ifndef DYN_SPAN
+    if(span == 0)
+#endif
+        size = 2*Span(bodies);
+#ifndef DYN_SPAN
+    else
+        size = 2*span;
+#endif
+    root = Node(nullptr,Eigen::Vector3d(0,0,0),size,0);
     for(auto it = bodies.begin(); it != bodies.end(); ++it){
         root.Add(*it);
         // <<<<<<<< DEBUG ONLY >>>>>>>> //
+        /*
         this->Print();
         std::cin.ignore();
         std::cout << std::endl;
+        //*/
     }
+    return size/2;
 }
 
 void Celestial::Octree::Draw(Celestial::Graphics &graphics){
@@ -112,6 +128,38 @@ void Celestial::Octree::DrawDFS(Celestial::Graphics &graphics, const Celestial::
 void Celestial::Octree::CalculateAcceleration(double theta){
     auto n = bodies.size();
     for (int i = 0; i != n; ++i) {
-        bodies[i].acceleration = root.TotalForce(bodies[i], theta);
+        bodies[i].acceleration = root.TotalAcceleration(bodies[i], theta);
+    }
+}
+
+std::vector<Celestial::Body> Celestial::Octree::Update(double dt){
+    int debug_i = 0;
+    for(auto it = bodies.begin(); it != bodies.end(); ++it, debug_i++) {
+        it->velocity += 0.5 * it->acceleration * dt;
+        it->position += it->velocity * dt;
+        it->velocity += 0.5 * it->acceleration * dt;
+        it->ResetAcceleration();
+    }
+    return bodies;
+}
+
+void Celestial::Octree::Recalculate(Node& head){
+    if(head.nodeState == NodeState::Leaf)
+    {
+        Body body = head.GetCG();
+        if(!head.GetQuad().Contains(body))
+        {
+            head.Clear();
+            root.Add(body);
+            head.nodeState = NodeState::Empty;
+        }
+        return;
+    }
+    if(head.nodeState == NodeState::Empty)
+    {
+        return;
+    }
+    for(int i = 0; i != 4; ++i){
+        Recalculate(head.nodeArray[i]);
     }
 }

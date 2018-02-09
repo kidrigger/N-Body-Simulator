@@ -22,11 +22,11 @@ namespace Celestial {
         void Create(const std::vector<Body>& bodies);
         void Run(double T, double dt);
         void Destroy();
-        void Draw();
-        void Print();
+        void Test(int n);
     private:
+        double span;
+        void centralize(const Body& center);
         std::vector<Body> bodies;
-        Octree octree;
         Graphics graphics;
     };
 }

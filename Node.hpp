@@ -29,11 +29,13 @@ namespace Celestial {
 
         // The vector containing all the child nodes of the tree;
         std::vector<Node> nodeArray;
+        
+        Node* parent;
 
         // Create new Node at the center that contains the subsystem in the Quad
         // with sidelength side
         // the in the tree is calculated automatically on create sub nodes.
-        Node(const Vector3d& center, double side,int id);
+        Node(Node* parent, const Vector3d& center, double side,int id);
 
         // Adds a new body to the sub-system
         // returns the reference to the cgBody of the system
@@ -45,29 +47,46 @@ namespace Celestial {
             return containQuad.Contains(body.position);
         }
 
+        // Returns the quadrilateral
         Quad GetQuad() const {
             return containQuad;
         }
 
+        // Returns the body containing the center of mass of the subsystem
         Body GetCG() const {
             return bodyCG;
         }
 
+        // Returns the ID of the current node.
         int GetID() const {
             return id;
         }
+        
+        // Clears the node (Clear all sub-nodes and then itself.)
+        void Clear() {
+            for(auto it = nodeArray.begin(); it != nodeArray.end(); ++it) {
+                it->Clear();
+            }
+            nodeArray.clear();
+        }
 
+        // Printing tool to convert the state to string and return
         std::string StateToString() const;
+        
+        // Printing tool to convert the quad to string and return
         std::string QuadToString() const;
 
-        Vector3d TotalForce(const Body& particle, double tolerance) const ;
+        // Calculates the total force on the particle by the subsystem
+        Vector3d TotalAcceleration(const Body& particle, double tolerance) const ;
     private:
         // The body containing total mass of subsystem and center of mass
         Body bodyCG; 
         // The containing quad of the node
         Quad containQuad;
         int id;
-
+        // Removes flinging error in the integration
+        float spat_tol;
+        // Creates and initialized the 4 subnodes in the nodeArray
         void CreateSubNodes();
     };
 }

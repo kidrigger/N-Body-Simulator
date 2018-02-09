@@ -12,7 +12,7 @@
 namespace Celestial {
     class Constants {
     public:
-        constexpr static const double Gravitation = 1.0;
+        constexpr static const double Gravitation = 1;
     };
 }
 
