@@ -34,6 +34,7 @@ namespace Celestial {
         void CalculateAcceleration(double theta = 0.5);
         std::vector<Body> Update(double dt);
         Body GetSystemCG () { return root.GetCG(); }
+        void Recalculate (cost Node& head);
         static Octree MakeAcceleratedOctree(const vector<Body>& bodies, double span = 0) {
             Octree oct;
             oct.Build(bodies,span);
@@ -47,7 +48,7 @@ namespace Celestial {
         void Clear() {root.Clear();}
         Node root;
     };
-    
+
     double Span(const vector<Celestial::Body>& bodies);
 }
 

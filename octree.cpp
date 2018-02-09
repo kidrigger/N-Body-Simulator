@@ -142,3 +142,24 @@ std::vector<Celestial::Body> Celestial::Octree::Update(double dt){
     }
     return bodies;
 }
+
+void Celestial::Octree::Recalculate(Node& head){
+    if(head.nodeState == NodeState::Leaf)
+    {
+        Body body = head.GetCG();
+        if(!head.GetQuad().Contains(body))
+        {
+            head.Clear();
+            root.Add(body);
+            head.nodeState = NodeState::Empty;
+        }
+        return;
+    }
+    if(head.nodeState == NodeState::Empty)
+    {
+        return;
+    }
+    for(int i = 0; i != 4; ++i){
+        Recalculate(head.nodeArray[i]);
+    }
+}
